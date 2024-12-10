@@ -1,0 +1,108 @@
+x-minio-credentials: &minio-credentials
+  MINIO_ROOT_USER: minio
+  MINIO_ROOT_PASSWORD: password
+  MINIO_VOLUMES: /var/lib/minio/data
+  MINIO_HOST: minio
+
+services:
+  postgresql:
+    image: postgres:16
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+  minio:
+    image: quay.io/minio/minio:latest
+    command:
+      - server
+      - --console-address
+      - :9001
+    environment:
+      <<: *minio-credentials
+    volumes:
+      - minio:/var/lib/minio/data
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+  minio-initialization:
+    image: quay.io/minio/mc:latest
+    entrypoint: /bin/sh
+    command: /minio-init.sh
+    volumes:
+      - ./dockerfiles/minio-init.sh:/minio-init.sh
+    environment:
+      <<: *minio-credentials
+    depends_on:
+      minio:
+        condition: service_healthy
+  rails:
+    image: ghcr.io/ikigai-systems/fundamento:latest
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:-abcdef}
+      - DATABASE_URL=postgres://postgres:password@postgresql/postgres
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      minio-initialization:
+        condition: service_completed_successfully
+  jobs:
+    image: ghcr.io/ikigai-systems/fundamento:latest
+    command: bundle exec good_job start
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:-abcdef}
+      - DATABASE_URL=postgres://postgres:password@postgresql/postgres
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      minio-initialization:
+        condition: service_completed_successfully
+  formula:
+    image: ghcr.io/ikigai-systems/formula:latest
+    environment:
+      FUNDAMENTO_BASE_URL: http://rails:3000
+    ports:
+      - '3001:3001'
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      minio-initialization:
+        condition: service_completed_successfully
+
+volumes:
+  postgres:
+  minio:
