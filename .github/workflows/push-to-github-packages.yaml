@@ -47,7 +47,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.PREFIX }}-website
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGES_PREFIX }}-website
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -106,7 +106,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.PREFIX }}-formula
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGES_PREFIX }}-formula
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
