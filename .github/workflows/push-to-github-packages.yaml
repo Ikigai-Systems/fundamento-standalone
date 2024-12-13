@@ -23,7 +23,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: fundamento-cloud
+          repository: ${{ github.repository_owner }}/fundamento-cloud
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -80,7 +80,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: fundamento-cloud
+          repository: ${{ github.repository_owner }}/fundamento-cloud
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
