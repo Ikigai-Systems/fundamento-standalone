@@ -57,7 +57,7 @@ services:
       minio:
         condition: service_healthy
   website:
-    image: ghcr.io/ikigai-systems/fundamento-standalone-website:latest
+    image: ghcr.io/ikigai-systems/fundamento-standalone-website:master
     environment:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:-abcdef}
       - DATABASE_URL=postgres://postgres:password@postgresql/postgres
@@ -73,7 +73,7 @@ services:
       minio-initialization:
         condition: service_completed_successfully
   jobs:
-    image: ghcr.io/ikigai-systems/fundamento-standalone-website:latest
+    image: ghcr.io/ikigai-systems/fundamento-standalone-website:master
     command: bundle exec good_job start
     environment:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:-abcdef}
@@ -88,7 +88,7 @@ services:
       minio-initialization:
         condition: service_completed_successfully
   formula:
-    image: ghcr.io/ikigai-systems/fundamento-standalone-formula:latest
+    image: ghcr.io/ikigai-systems/fundamento-standalone-formula:master
     environment:
       FUNDAMENTO_BASE_URL: http://rails:3000
     ports:
