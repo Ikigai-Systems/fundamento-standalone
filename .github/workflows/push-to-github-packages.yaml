@@ -70,6 +70,8 @@ jobs:
             "fontawesome-auth=${{ secrets.FONTAWESOME_AUTH }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            RAILS_ENV=standalone
 
   build-and-push-image-fundamento-standalone-formula:
     runs-on: ubuntu-latest
