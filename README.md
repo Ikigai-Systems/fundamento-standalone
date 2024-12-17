@@ -1,7 +1,7 @@
 # Fundamento - Strong foundation for your internal collaboration
 
-<p style="text-align: center;">
-  <a href="https://fundamento.it" target="_blank" style="text-align: center;">
+<p align="center">
+  <a href="https://fundamento.it" target="_blank" align="center">
     <img src="https://res.cloudinary.com/fundamento/image/upload/v1734469016/fundamento_banner.webp" width="900" alt="Fundamento Banner">
   </a>
   <br>
@@ -23,7 +23,7 @@
 
 ---
 
-<p style="text-align: center;">
+<p align="center">
 <a href="https://fundamento.it">Fundamento</a> &bull;
 <a href="https://docs.fundamento.it">Docs</a> &bull;
 <a href="https://fundamento.it/pricing">Pricing</a> &bull;
