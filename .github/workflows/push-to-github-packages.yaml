@@ -89,6 +89,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/fundamento-cloud
           path: fundamento-cloud
+          ref: ${{ github.ref_name }}
           token: ${{ secrets.GH_PAT }}
 
       - name: Set up Docker Buildx
