@@ -23,6 +23,14 @@
 
 ---
 
+### Making a release
+
+* Create a release in https://github.com/Ikigai-Systems/fundamento-cloud
+* Use the same release name in this repository
+* Official release images will be created in this repository.
+
+---
+
 <p align="center">
 <a href="https://fundamento.it">Fundamento</a> &bull;
 <a href="https://docs.fundamento.it">Docs</a> &bull;
