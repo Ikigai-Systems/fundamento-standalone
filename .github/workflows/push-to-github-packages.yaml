@@ -56,8 +56,9 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=ref,event=branch
+            type=ref,event=tag
             type=ref,event=pr
-            type=sha
+            type=sha,enable={{is_default_branch}}
             type=raw,value=${{ steps.current-time.outputs.time }},enable={{is_default_branch}}
 
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
@@ -118,8 +119,9 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=ref,event=branch
+            type=ref,event=tag
             type=ref,event=pr
-            type=sha
+            type=sha,enable={{is_default_branch}}
             type=raw,value=${{ steps.current-time.outputs.time }},enable={{is_default_branch}}
 
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
