@@ -61,6 +61,9 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@postgresql/postgres
       - REDIS_URL=redis://redis
+      - EDITOR=nano
+    volumes:
+      - credentials:/rails/config/credentials
     env_file:
       - env.standalone
     ports:
@@ -80,6 +83,9 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@postgresql/postgres
       - REDIS_URL=redis://redis
+      - EDITOR=nano
+    volumes:
+      - credentials:/rails/config/credentials
     env_file:
       - env.standalone
     depends_on:
@@ -112,3 +118,4 @@ services:
 volumes:
   postgres:
   minio:
+  credentials:
