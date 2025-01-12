@@ -28,13 +28,15 @@ Unclaimed ports: `5432`, `6379`, `9000`, `9001`, `3000`, `3001`
 1. Clone this repository, i.e.: `git clone https://github.com/Ikigai-Systems/fundamento-standalone.git`
 2. Adjust environment variables:
    1. `cp env.sample env.standalone`
-   2. At minimum, provide SECRET_KEY_BASE inside `env.standalone`, i.e.:
+   2. edit `env.standalone` and configure account for the first user
+3. Optionally adjust Fundamento's [version](https://github.com/Ikigai-Systems/fundamento-standalone/releases) in `docker-compose.yml` - otherwise `latest` will be used
+4. Initialize secrets with the following command:
     ```
-    echo "SECRET_KEY_BASE=`docker run --rm ruby:3.2 ruby -rsecurerandom -e 'puts SecureRandom.hex(64)'`" >> env.standalone
+    docker compose run -ti --rm website -- bin/rails credentials:edit -e standalone 
     ```
-3. Optionally adjust Fundamento version in `docker-compose.yml` - otherwise `latest` will be used
-4. Build and start docker containers: `docker compose up`
-5. Enjoy your Fundamento on: `http://localhost:3000`
+    In most cases you don't need to change anything in this file.
+5. Build and start docker containers: `docker compose up`
+6. Enjoy your Fundamento on: `http://localhost:3000`
 
 ---
 
