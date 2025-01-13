@@ -47,6 +47,10 @@ Unclaimed ports: `5432`, `6379`, `9000`, `9001`, `3000`, `3001`
 2. Docker containers will be built using `latest` available version. If you need to use specific
    Fundamento's [version](https://github.com/Ikigai-Systems/fundamento-standalone/releases) adjust it in `docker-compose.yml` **before** building containers (step 3 from _Quick Start_ instructions).
 
+### Troubleshooting
+
+_\<to be filled in later with real examples we'd encounter\>_
+
 ---
 
 ## Documentation
