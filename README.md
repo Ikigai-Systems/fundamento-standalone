@@ -21,7 +21,7 @@
 
 ### Requirements
 
-Unclaimed ports: `5432`, `6379`, `9000`, `9001`, `3000`, `3001`
+Unclaimed port: `3000`
 
 ### Quick start
 
