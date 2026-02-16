@@ -563,17 +563,191 @@ git commit -m "Update design doc to reflect final decisions"
 
 ---
 
+### Task 9: Update docs.fundamento.it installation page
+
+**Files:**
+- Modify: `/Users/pawel/Development/Ikigai-Systems/fundamento-docs/src/app/installation/docker/page.mdx`
+- Modify: `/Users/pawel/Development/Ikigai-Systems/fundamento-docs/src/app/installation/cloud-providers/page.mdx`
+
+**Step 1: Rewrite the Docker installation page**
+
+Replace the entire contents of `/Users/pawel/Development/Ikigai-Systems/fundamento-docs/src/app/installation/docker/page.mdx` with:
+
+```mdx
+# Installing Fundamento by using Docker
+
+## Requirements
+
+- A working [Docker](https://docs.docker.com/engine/install/#server) installation with [Docker Compose](https://docs.docker.com/compose/install/)
+- Port `3000` available (configurable)
+
+## Quick start
+
+1. Clone the [Fundamento standalone](https://github.com/Ikigai-Systems/fundamento-standalone) repository:
+    <div className="workaround-superfluous-margin-top-default-style">
+    ```shell
+    git clone https://github.com/Ikigai-Systems/fundamento-standalone.git
+    cd fundamento-standalone
+    ```
+    </div>
+    Alternatively [download as a .zip](https://github.com/Ikigai-Systems/fundamento-standalone/archive/refs/heads/master.zip).
+
+2. (Optional) Edit `env.standalone` to customize the initial admin account.
+   Default credentials are `john@fundamento.it` / `secret!`. You should change these
+   if your instance will be publicly accessible.
+
+3. Start Fundamento:
+    <div className="workaround-superfluous-margin-top-default-style">
+    ```shell
+    docker compose up
+    ```
+    </div>
+
+4. Open [http://localhost:3000](http://localhost:3000) and log in.
+
+Credentials are generated automatically on first boot — no manual setup needed.
+
+## Architecture
+
+Fundamento runs as a set of Docker containers:
+
+| Service | Purpose |
+|---------|---------|
+| **website** | Main web application (Rails) |
+| **jobs** | Background job worker (GoodJob) |
+| **postgresql** | Database (PostgreSQL 16) |
+| **redis** | Caching and real-time features |
+
+## Configuration
+
+### Admin account (`env.standalone`)
+
+| Variable | Default |
+|----------|---------|
+| `FUNDAMENTO_ORGANIZATION` | Fundamento |
+| `FUNDAMENTO_ADMIN_EMAIL` | john@fundamento.it |
+| `FUNDAMENTO_ADMIN_FIRST_NAME` | John |
+| `FUNDAMENTO_ADMIN_LAST_NAME` | Doe |
+| `FUNDAMENTO_ADMIN_PASSWORD` | secret! |
+
+### Environment variables (`.env`)
+
+Copy `.env.example` to `.env` to customize optional settings:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RAILS_PORT` | 3000 | Web server port |
+| `HTTP_HOST` | localhost:3000 | Public hostname for links and emails |
+| `RAILS_LOG_LEVEL` | info | Log verbosity (debug/info/warn/error) |
+| `FUNDAMENTO_VERSION` | latest | Pin a specific image version |
+
+## Updating
+
+Pull the latest images and restart:
+
+<div className="workaround-superfluous-margin-top-default-style">
+```shell
+docker compose pull
+docker compose up -d
+```
+</div>
+
+Database migrations run automatically on startup.
+
+To pin a specific version, set `FUNDAMENTO_VERSION` in your `.env` file or specify the
+version directly in `docker-compose.yml`.
+
+## Customizing credentials
+
+Credentials are auto-generated on first boot. To view or edit them later:
+
+<div className="workaround-superfluous-margin-top-default-style">
+```shell
+docker compose run --rm website bin/rails credentials:edit -e standalone
+```
+</div>
+
+This opens the Nano editor. Press `Ctrl-X` to save and exit.
+
+## Troubleshooting
+
+### Port 3000 already in use
+
+Set a different port in `.env`:
+
+<div className="workaround-superfluous-margin-top-default-style">
+```shell
+RAILS_PORT=3001
+```
+</div>
+
+### Viewing logs
+
+<div className="workaround-superfluous-margin-top-default-style">
+```shell
+docker compose logs -f           # all services
+docker compose logs -f website   # web application only
+```
+</div>
+
+### Resetting everything
+
+To start fresh (this destroys all data):
+
+<div className="workaround-superfluous-margin-top-default-style">
+```shell
+docker compose down -v
+docker compose up
+```
+</div>
+
+## Got stuck?
+
+Feel free to [contact support](mailto:support@fundamento.it?Subject=Docker) if you got stuck or have
+any questions.
+```
+
+**Step 2: Fix broken link in cloud-providers page**
+
+In `/Users/pawel/Development/Ikigai-Systems/fundamento-docs/src/app/installation/cloud-providers/page.mdx`, change:
+
+```
+Apart from [installation with Docker](/installation/installation-methods/docker)
+```
+
+to:
+
+```
+Apart from [installation with Docker](/installation/docker)
+```
+
+**Step 3: Commit**
+
+```bash
+cd /Users/pawel/Development/Ikigai-Systems/fundamento-docs
+git add src/app/installation/docker/page.mdx src/app/installation/cloud-providers/page.mdx
+git commit -m "Update Docker installation docs for simplified setup
+
+Installation is now 3 steps (no manual credential generation).
+Adds architecture overview, configuration reference, troubleshooting.
+Fixes broken link on cloud-providers page."
+```
+
+---
+
 ## Execution Order
 
 Tasks 1-3 modify `fundamento-cloud` (can be done in one session).
 Tasks 4-8 modify `fundamento-standalone` (can be done in one session).
-Both groups are independent and can run in parallel.
+Task 9 modifies `fundamento-docs` (independent).
+All three groups are independent and can run in parallel.
 
 ## Post-Implementation
 
 After all tasks are done:
 1. Push fundamento-cloud changes to a branch, create PR
 2. Push fundamento-standalone changes to a branch, create PR
-3. Once cloud PR merges, the next master build will produce `ghcr.io/ikigai-systems/fundamento:master`
-4. Test standalone locally: `docker compose up` in fundamento-standalone
-5. Verify auto-credential generation works on first boot
+3. Push fundamento-docs changes to a branch, create PR
+4. Once cloud PR merges, the next master build will produce `ghcr.io/ikigai-systems/fundamento:master`
+5. Test standalone locally: `docker compose up` in fundamento-standalone
+6. Verify auto-credential generation works on first boot
