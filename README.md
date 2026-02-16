@@ -9,68 +9,132 @@
 
 ---
 
-## Features
+## Quick Start
 
-* One
-* Two
-* Three
+1. Clone this repository:
+   ```
+   git clone https://github.com/Ikigai-Systems/fundamento-standalone.git
+   cd fundamento-standalone
+   ```
+
+2. (Optional) Edit `env.standalone` to customize the initial admin account.
+   Defaults are `john@fundamento.it` / `secret!`.
+
+3. Start Fundamento:
+   ```
+   docker compose up
+   ```
+
+4. Open `http://localhost:3000` and log in.
+
+That's it — credentials are generated automatically on first boot.
 
 ---
 
-## Installation
+## Architecture
 
-### Requirements
+Fundamento runs as a set of Docker containers:
 
-Unclaimed port: `3000`
+| Service | Purpose |
+|---------|---------|
+| **website** | The main web application (Rails) |
+| **jobs** | Background job worker (GoodJob) |
+| **postgresql** | Database (PostgreSQL 16) |
+| **redis** | Caching and real-time features |
 
-### Quick start
+---
 
-1. Clone this repository, i.e.: `git clone https://github.com/Ikigai-Systems/fundamento-standalone.git`
-2. By default, Fundamento will create superadmin user for you with the following credentials to log in:
-   ```
-   john@fundamento.it / secret!
-   ```
-   If you plan to only play with Fundamento it's ok to leave it as is. For production sites you should
-   configure unique superadmin user though. To do that, you need to edit `env.standalone` file before next steps.
-3. Generate base secrets for your Fundamento instance:
-   ```
-   docker compose run -ti --rm website -- bin/rails credentials:edit -e standalone
-   ```
-   This will bring up Nano editor allowing you to adjust generated values. Press Ctrl-X to leave the editor -
-   you don't need to change anything for your first Fundamento instance.
-4. Build and start docker containers: `docker compose up`
-5. Enjoy your Fundamento on: `http://localhost:3000`
+## Configuration
 
-### Selecting version
+### Admin account (`env.standalone`)
 
-Docker will download and cache the `latest` available Fundamento version. If you need to use specific
-Fundamento's [version](https://github.com/Ikigai-Systems/fundamento-standalone/releases), or want to install Fundamento on host used for installation in the past, you
-need to adjust version in `docker-compose.yml` **before** building containers (step 3 from _Quick Start_ instructions).
+Edit before first start to set your admin credentials:
 
-### Troubleshooting
+| Variable | Default |
+|----------|---------|
+| `FUNDAMENTO_ORGANIZATION` | Fundamento |
+| `FUNDAMENTO_ADMIN_EMAIL` | john@fundamento.it |
+| `FUNDAMENTO_ADMIN_FIRST_NAME` | John |
+| `FUNDAMENTO_ADMIN_LAST_NAME` | Doe |
+| `FUNDAMENTO_ADMIN_PASSWORD` | secret! |
 
-_\<to be filled in later with real examples we'd encounter\>_
+### Environment variables (`.env`)
+
+Copy `.env.example` to `.env` to customize:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RAILS_PORT` | 3000 | Web server port |
+| `HTTP_HOST` | localhost:3000 | Public hostname for links/emails |
+| `RAILS_LOG_LEVEL` | info | Log verbosity (debug/info/warn/error) |
+| `FUNDAMENTO_VERSION` | latest | Pin a specific image version |
+
+---
+
+## Updating
+
+Pull the latest images and restart:
+
+```
+docker compose pull
+docker compose up -d
+```
+
+Database migrations run automatically on startup.
+
+To pin a specific version, set `FUNDAMENTO_VERSION` in your `.env` file.
+
+---
+
+## Customizing Credentials
+
+Credentials are auto-generated on first boot. To view or edit them later:
+
+```
+docker compose run --rm website bin/rails credentials:edit -e standalone
+```
+
+This opens the Nano editor. Press `Ctrl-X` to save and exit.
+
+---
+
+## Troubleshooting
+
+### Port 3000 already in use
+
+Set a different port in `.env`:
+```
+RAILS_PORT=3001
+```
+
+### Viewing logs
+
+```
+docker compose logs -f           # all services
+docker compose logs -f website   # web application only
+```
+
+### Resetting everything
+
+To start fresh (this destroys all data):
+```
+docker compose down -v
+docker compose up
+```
+
+### Re-seeding admin account
+
+After changing `env.standalone`, re-seed without losing other data:
+```
+docker compose exec website bin/rails db:seed:replant
+```
+**Warning:** This resets all data in the database.
 
 ---
 
 ## Documentation
 
-* https://docs.fundamento.it
-
----
-
-## Development
-
-### Making a release
-
-* Create a release in https://github.com/Ikigai-Systems/fundamento-cloud
-* Use the same release name in this repository \
-  Example:
-  ```
-  gh release create -R ikigai-systems/fundamento-cloud v0.0.1-test.4
-  gh release create -R ikigai-systems/fundamento-standalone v0.0.1-test.4
-  ```
-* Official release images will be created in this repository.
+https://docs.fundamento.it
 
 ---
 
