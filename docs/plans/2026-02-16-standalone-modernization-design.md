@@ -58,11 +58,12 @@ Services:
 - `redis` (internal only)
 - `website` (ghcr.io/ikigai-systems/fundamento:latest)
 - `jobs` (same image, runs good_job)
-- `blocknote-converter` (ghcr.io/ikigai-systems/blocknote-converter:latest)
+
+Note: blocknote-converter is not needed as a separate service — it runs in-process via `BlocknoteConverterService` using Node.js built into the main image.
 
 Key patterns from cloud:
 - YAML anchors for shared environment config
-- Configurable ports via env vars (RAILS_PORT, BLOCKNOTE_PORT)
+- Configurable ports via env vars (RAILS_PORT)
 - Health checks on infrastructure services
 - Credentials volume for persistence
 
@@ -86,7 +87,7 @@ Key patterns from cloud:
 
 **README.md sections:**
 - Quick Start
-- Architecture overview (5 services, what each does)
+- Architecture overview (4 services, what each does)
 - Configuration reference (env vars table)
 - Updating (`docker compose pull && docker compose up -d`)
 - Customizing credentials
@@ -98,7 +99,6 @@ Key patterns from cloud:
 |-----|-----|
 | `ghcr.io/ikigai-systems/fundamento-standalone-website` | `ghcr.io/ikigai-systems/fundamento` |
 | `ghcr.io/ikigai-systems/fundamento-standalone-formula` | removed (formula-eval is gone) |
-| n/a | `ghcr.io/ikigai-systems/blocknote-converter` (already built by cloud) |
 
 ## Changes by Repository
 
