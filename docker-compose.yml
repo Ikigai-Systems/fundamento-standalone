@@ -1,3 +1,9 @@
+x-rails-environment: &rails-environment
+  DATABASE_URL: postgres://postgres:password@postgresql/postgres
+  REDIS_URL: redis://redis
+  HTTP_HOST: ${HTTP_HOST:-localhost:3000}
+  RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
+
 services:
   postgresql:
     image: postgres:16
@@ -18,44 +24,29 @@ services:
       timeout: 10s
       retries: 3
   website:
-    image: ghcr.io/ikigai-systems/fundamento-standalone-website:latest
+    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
     environment:
-      - DATABASE_URL=postgres://postgres:password@postgresql/postgres
-      - REDIS_URL=redis://redis
-      - FORMULA_EVAL_MICROSERVICE_URL=http://formula:3001/formulas/eval
-      - EDITOR=nano
+      <<: *rails-environment
     volumes:
       - credentials:/rails/config/credentials
+      - storage:/rails/storage
     env_file:
       - env.standalone
     ports:
-      - '3000:3000'
+      - '${RAILS_PORT:-3000}:3000'
     depends_on:
       postgresql:
         condition: service_healthy
       redis:
         condition: service_healthy
   jobs:
-    image: ghcr.io/ikigai-systems/fundamento-standalone-website:latest
+    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
     command: bundle exec good_job start
     environment:
-      - DATABASE_URL=postgres://postgres:password@postgresql/postgres
-      - REDIS_URL=redis://redis
-      - FORMULA_EVAL_MICROSERVICE_URL=http://formula:3001/formulas/eval
-      - EDITOR=nano
+      <<: *rails-environment
     volumes:
       - credentials:/rails/config/credentials
-    env_file:
-      - env.standalone
-    depends_on:
-      postgresql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-  formula:
-    image: ghcr.io/ikigai-systems/fundamento-standalone-formula:latest
-    environment:
-      FUNDAMENTO_BASE_URL: http://rails:3000
+      - storage:/rails/storage
     env_file:
       - env.standalone
     depends_on:
@@ -67,3 +58,4 @@ services:
 volumes:
   postgres:
   credentials:
+  storage:
