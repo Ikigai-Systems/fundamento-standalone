@@ -24,7 +24,7 @@ services:
       timeout: 10s
       retries: 3
   website:
-    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
+    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-master}
     environment:
       <<: *rails-environment
     volumes:
@@ -40,7 +40,7 @@ services:
       redis:
         condition: service_healthy
   jobs:
-    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
+    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-master}
     command: bundle exec good_job start
     environment:
       <<: *rails-environment

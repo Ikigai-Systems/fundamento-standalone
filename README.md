@@ -67,7 +67,7 @@ Copy `.env.example` to `.env` to customize:
 | `RAILS_PORT` | 3000 | Web server port |
 | `HTTP_HOST` | localhost:3000 | Public hostname for links/emails |
 | `RAILS_LOG_LEVEL` | info | Log verbosity (debug/info/warn/error) |
-| `FUNDAMENTO_VERSION` | latest | Pin a specific image version |
+| `FUNDAMENTO_VERSION` | master | Pin a specific image version |
 
 ---
 
