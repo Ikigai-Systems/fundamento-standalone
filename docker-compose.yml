@@ -1,7 +1,7 @@
 x-rails-environment: &rails-environment
   DATABASE_URL: postgres://postgres:password@postgresql/postgres
   REDIS_URL: redis://redis
-  HTTP_HOST: ${HTTP_HOST:-localhost:3000}
+  HTTP_HOST: ${HTTP_HOST:-localhost:3333}
   RAILS_LOG_LEVEL: ${RAILS_LOG_LEVEL:-info}
 
 services:
@@ -24,7 +24,7 @@ services:
       timeout: 10s
       retries: 3
   website:
-    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-master}
+    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
     environment:
       <<: *rails-environment
     volumes:
@@ -33,14 +33,14 @@ services:
     env_file:
       - env.standalone
     ports:
-      - '${RAILS_PORT:-3000}:3000'
+      - '${RAILS_PORT:-3333}:3000'
     depends_on:
       postgresql:
         condition: service_healthy
       redis:
         condition: service_healthy
   jobs:
-    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-master}
+    image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
     command: bundle exec good_job start
     environment:
       <<: *rails-environment

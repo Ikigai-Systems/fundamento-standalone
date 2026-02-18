@@ -25,7 +25,7 @@
    docker compose up
    ```
 
-4. Open `http://localhost:3000` and log in.
+4. Open `http://localhost:3333` and log in.
 
 That's it — credentials are generated automatically on first boot.
 
@@ -64,10 +64,10 @@ Copy `.env.example` to `.env` to customize:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `RAILS_PORT` | 3000 | Web server port |
-| `HTTP_HOST` | localhost:3000 | Public hostname for links/emails |
+| `RAILS_PORT` | 3333 | Web server port |
+| `HTTP_HOST` | localhost:3333 | Public hostname for links and emails |
 | `RAILS_LOG_LEVEL` | info | Log verbosity (debug/info/warn/error) |
-| `FUNDAMENTO_VERSION` | master | Pin a specific image version |
+| `FUNDAMENTO_VERSION` | latest | Pin a specific image version |
 
 ---
 
@@ -86,25 +86,42 @@ To pin a specific version, set `FUNDAMENTO_VERSION` in your `.env` file.
 
 ---
 
-## Customizing Credentials
+## Email (SMTP)
 
-Credentials are auto-generated on first boot. To view or edit them later:
+By default, Fundamento does not send emails. To enable email delivery,
+create a credentials file with your SMTP settings:
 
 ```
 docker compose run --rm website bin/rails credentials:edit -e standalone
 ```
 
-This opens the Nano editor. Press `Ctrl-X` to save and exit.
+This opens the Nano editor. Add an `smtp` block:
+
+```yaml
+smtp:
+  user_name: your_username
+  password: your_password
+  address: smtp.example.com
+  port: 587
+  authentication: login
+```
+
+Press `Ctrl-X`, then `Y` to save and exit. Restart to apply:
+
+```
+docker compose restart website jobs
+```
 
 ---
 
 ## Troubleshooting
 
-### Port 3000 already in use
+### Port 3333 already in use
 
 Set a different port in `.env`:
 ```
-RAILS_PORT=3001
+RAILS_PORT=3334
+HTTP_HOST=localhost:3334
 ```
 
 ### Viewing logs
