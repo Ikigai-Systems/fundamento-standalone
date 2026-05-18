@@ -7,6 +7,7 @@ x-rails-environment: &rails-environment
 services:
   postgresql:
     image: postgres:16
+    restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=password
     volumes:
@@ -18,6 +19,7 @@ services:
       retries: 3
   redis:
     image: redis
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
@@ -25,6 +27,7 @@ services:
       retries: 3
   website:
     image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
+    restart: unless-stopped
     environment:
       <<: *rails-environment
     volumes:
@@ -41,6 +44,7 @@ services:
         condition: service_healthy
   jobs:
     image: ghcr.io/ikigai-systems/fundamento:${FUNDAMENTO_VERSION:-latest}
+    restart: unless-stopped
     command: bundle exec good_job start
     environment:
       <<: *rails-environment
